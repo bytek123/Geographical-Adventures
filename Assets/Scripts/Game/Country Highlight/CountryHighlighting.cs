@@ -19,7 +19,7 @@ public class CountryHighlighting : MonoBehaviour
 	{
 		countryHighlightsBuffer = ComputeHelper.CreateStructuredBuffer<float>(numCountries);
 		BindConstantData();
-		EditorShaderHelper.onRebindRequired += BindConstantData;
+		EditorOnlyInit();
 		initialized = true;
 	}
 
@@ -30,7 +30,7 @@ public class CountryHighlighting : MonoBehaviour
 			return;
 		}
 
-		Vector2 playerTexCoord = CoordinateSystem.PointToCoordinate((player.position + player.forward * lookaheadDst).normalized).ToUV();
+		Vector2 playerTexCoord = GeoMaths.PointToCoordinate((player.position + player.forward * lookaheadDst).normalized).ToUV();
 
 		compute.SetVector("playerTexCoord", playerTexCoord);
 		compute.SetFloat("deltaTime", Time.deltaTime);
@@ -60,6 +60,13 @@ public class CountryHighlighting : MonoBehaviour
 	void OnDestroy()
 	{
 		ComputeHelper.Release(countryHighlightsBuffer);
+	}
+
+	void EditorOnlyInit()
+	{
+#if UNITY_EDITOR
+		EditorShaderHelper.onRebindRequired += BindConstantData;
+#endif
 	}
 
 }

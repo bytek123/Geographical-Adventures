@@ -46,8 +46,8 @@ public class CountryIndexMapper : MonoBehaviour
 					path[j] = new Vector2(coordPath[j].longitude * Mathf.Rad2Deg, coordPath[j].latitude * Mathf.Rad2Deg);
 				}
 				Bounds2D bounds = new Bounds2D(path);
-				meta.boundsMax = bounds.max;
-				meta.boundsMin = bounds.min;
+				meta.boundsMax = bounds.Max;
+				meta.boundsMin = bounds.Min;
 
 				points.AddRange(path);
 				meta.length = path.Length;

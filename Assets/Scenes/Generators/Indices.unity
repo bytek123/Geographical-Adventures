@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   filterMode: 0
   display: {fileID: 2099516303}
-  textureWidth: 16384
+  textureWidth: 8192
 --- !u!4 &727075353
 Transform:
   m_ObjectHideFlags: 0
@@ -167,6 +167,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -197,6 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2f6a9b3d62d55b4fa7c5df16789c47d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fileName: TileCapture
   display: {fileID: 2099516305}
 --- !u!1 &2099516301
 GameObject:
@@ -227,6 +229,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -235,7 +238,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e998758f4b8c53a4ebb04dd9f558ac56, type: 2}
+  - {fileID: 2100000, guid: f993a9ddaae6a704a97ac1f410d0b61a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -275,6 +278,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.2831855, y: 3.1415927, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -358,6 +362,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -394,7 +399,7 @@ MonoBehaviour:
   autoRunOnAwake: 1
   countryFile: {fileID: 4900000, guid: 663e585d2c2099a41886f9227128cfce, type: 3}
   cityFile: {fileID: 4900000, guid: ad350dee819aaab42981bde375f8176e, type: 3}
-  extraInfoFile: {fileID: 0}
+  capitalsFile: {fileID: 4900000, guid: 45561d6299b0b334c8376668502dce3d, type: 3}
   countries: []
 --- !u!4 &2109044229
 Transform:
@@ -406,6 +411,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2

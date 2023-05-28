@@ -1,5 +1,4 @@
 #pragma kernel SetPositions
-#pragma kernel Partition
 
 #include "Assets/Scripts/Shader Common/Math.hlsl"
 #include "Assets/Scripts/Shader Common/GeoMath.hlsl"
@@ -9,7 +8,6 @@ struct CityLight {
 	float height;
 	float intensity;
 	float randomT;
-	int inRenderGroup;
 };
 
 RWStructuredBuffer<CityLight> CityLights;
@@ -34,7 +32,7 @@ void SetPositions (uint3 id : SV_DispatchThreadID)
 	float2 bestPosUV = 0;
 	float bestIntensity = 0;
 
-	const int minIterations = 10;
+	const int minIterations = 150;
 	const int maxIterations = 1000;
 
 	// Generate n random points on globe and choose the one with greatest brightness as spawn point for this light
@@ -46,7 +44,7 @@ void SetPositions (uint3 id : SV_DispatchThreadID)
 		if (intensity > bestIntensity) {
 			bestIntensity = intensity;
 			bestPos = randomPoint;
-			bestPosUV = uv;
+			bestPosUV = uv;//
 		}
 
 		// Exit early if a plausible position has been found (or if a very bright point has already been found)
@@ -62,27 +60,4 @@ void SetPositions (uint3 id : SV_DispatchThreadID)
 		CityLights[id.x].intensity = bestIntensity;
 		CityLights[id.x].randomT = randomValue(randomState);
 	}
-}
-
-// Loop though all lights and add the ones that are inside the given bounds
-// Note that some bounds may overlap, so to avoid duplicates, a light that has 
-// been added to one partition will be marked with 'inRenderGroup = 1'.
-AppendStructuredBuffer<CityLight> PartitionedLights;
-float3 boundsCentre;
-float3 boundsSize;
-
-[numthreads(32,1,1)]
-void Partition (uint3 id : SV_DispatchThreadID)
-{
-
-	if (CityLights[id.x].inRenderGroup == 0) {
-		float3 pos = CityLights[id.x].pointOnSphere * CityLights[id.x].height;
-		float3 o = abs(pos - boundsCentre);
-
-		if (o.x < boundsSize.x / 2 && o.y < boundsSize.y / 2 && o.z < boundsSize.z / 2) {
-			PartitionedLights.Append(CityLights[id.x]);
-			CityLights[id.x].inRenderGroup = 1;		
-		}
-	}
-	
 }

@@ -4,8 +4,8 @@ Shader "Instanced/CityLight" {
 	}
 	SubShader {
 
-		//ZWrite Off
-
+		Tags { "Queue"="Geometry" }
+	
 		Pass {
 
 			CGPROGRAM
@@ -21,15 +21,17 @@ Shader "Instanced/CityLight" {
 				float height;
 				float intensity;
 				float randomT;
-				int inRenderGroup;
 			};
 
 			StructuredBuffer<CityLight> CityLights;
+			int bufferOffset;
+
 			float sizeMin;
 			float sizeMax;
 			float3 dirToSun;
 			float4 colourDim;
 			float4 colourBright;
+			float brightnessMultiplier;
 			float turnOnTime;
 			float turnOnTimeVariation;
 
@@ -37,15 +39,12 @@ Shader "Instanced/CityLight" {
 			struct v2f
 			{
 				float4 pos : SV_POSITION;
-				float show : TEXCOORD0;
-				float4 colour : TEXCOORD1;
+				float4 colour : TEXCOORD0;
 			};
 
 			v2f vert (appdata_full v, uint instanceID : SV_InstanceID)
 			{
-				CityLight cityLight = CityLights[instanceID];
-
-			
+				CityLight cityLight = CityLights[bufferOffset + instanceID];
 
 				// -1 = midnight; +1 = midday
 				float sunDot = dot(cityLight.pointOnSphere, dirToSun);
@@ -53,22 +52,23 @@ Shader "Instanced/CityLight" {
 				float scale = (lightAppear - sunDot) / 0.1;
 
 				float size = lerp(sizeMin, sizeMax, cityLight.intensity) * 0.01 * saturate(scale);
-				float3 vertexOffset = v.vertex.xyz * size;
-				float3 worldPosition = cityLight.pointOnSphere * cityLight.height + vertexOffset;
 				
+				float3 vertexOffset = v.vertex.xyz * size;
+				float3 worldCentre = cityLight.pointOnSphere * cityLight.height;
+				float3 worldPosition = worldCentre + vertexOffset;
+
+				float3 dirToCam = normalize(_WorldSpaceCameraPos.xyz - worldCentre);
+				worldPosition += dirToCam*cityLight.intensity;
 
 				v2f o;
 				o.pos = mul(UNITY_MATRIX_VP, float4(worldPosition, 1.0f));
-				o.show = scale; // when scale is negative this will tell the fragment shader not to render the light
-				o.colour = lerp(colourDim, colourBright, cityLight.intensity);
-				o.colour.a = cityLight.intensity + 2;
+				o.colour = lerp(colourDim, colourBright * brightnessMultiplier, cityLight.intensity);
 				return o;
 			}
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				clip(i.show);
-				return i.colour;
+				return float4(i.colour.rgb, 1);
 			}
 
 			ENDCG
